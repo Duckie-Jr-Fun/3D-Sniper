@@ -1,14 +1,14 @@
-// Import Three.js and the First Person controls
+// Import Three.js and the First Person controls via CDN so it works on GitHub Pages
 import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
 import { PointerLockControls } from 'https://unpkg.com/three@0.160.0/examples/jsm/controls/PointerLockControls.js';
 
 // 1. SET UP SCENE, CAMERA, AND RENDERER
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x87CEEB); // Sky blue
-scene.fog = new THREE.Fog(0x87CEEB, 0, 750); // Adds atmosphere
+scene.fog = new THREE.Fog(0x87CEEB, 0, 750); 
 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
-camera.position.y = 10; // Player height
+camera.position.y = 10; // Player eye level
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -19,34 +19,34 @@ const light = new THREE.HemisphereLight(0xeeeeff, 0x777788, 0.75);
 light.position.set(0.5, 1, 0.75);
 scene.add(light);
 
-// 3. BUILD THE ARENA (Floor and a Target Box)
+// 3. BUILD THE ARENA
 const floorGeometry = new THREE.PlaneGeometry(200, 200, 10, 10);
 const floorMaterial = new THREE.MeshBasicMaterial({ color: 0x333333, wireframe: true });
 const floor = new THREE.Mesh(floorGeometry, floorMaterial);
-floor.rotation.x = -Math.PI / 2; // Lay it flat
+floor.rotation.x = -Math.PI / 2; // Lay it flat on the ground
 scene.add(floor);
 
-// Create an enemy target box
+// Create an enemy target box (The "Bot")
 const boxGeometry = new THREE.BoxGeometry(10, 10, 10);
 const boxMaterial = new THREE.MeshPhongMaterial({ color: 0xff0000 });
 const box = new THREE.Mesh(boxGeometry, boxMaterial);
 box.position.set(0, 5, -30); // Place it in front of the player
 scene.add(box);
 
-// 4. SET UP CONTROLS (Pointer Lock for looking around)
+// 4. SET UP CONTROLS (Pointer Lock)
 const controls = new PointerLockControls(camera, document.body);
 const startButton = document.getElementById('startButton');
 
 startButton.addEventListener('click', () => {
-    controls.lock(); // Locks the mouse inside the game
+    controls.lock(); 
 });
 
 controls.addEventListener('lock', () => {
-    startButton.style.display = 'none'; // Hide button when playing
+    startButton.style.display = 'none'; 
 });
 
 controls.addEventListener('unlock', () => {
-    startButton.style.display = 'block'; // Show button if they press ESC
+    startButton.style.display = 'block'; 
 });
 
 scene.add(controls.getObject());
@@ -92,17 +92,16 @@ function animate() {
         velocity.x -= velocity.x * 10.0 * delta;
         velocity.z -= velocity.z * 10.0 * delta;
 
-        // Calculate direction based on keys pressed
         direction.z = Number(moveForward) - Number(moveBackward);
         direction.x = Number(moveRight) - Number(moveLeft);
-        direction.normalize(); // Ensure consistent speed in all directions
+        direction.normalize(); // Ensure diagonal movement isn't faster
 
         // Apply speed
         const speed = 400.0;
         if (moveForward || moveBackward) velocity.z -= direction.z * speed * delta;
         if (moveLeft || moveRight) velocity.x -= direction.x * speed * delta;
 
-        // Move the camera
+        // Move the camera based on velocity
         controls.moveRight(-velocity.x * delta);
         controls.moveForward(-velocity.z * delta);
     }
@@ -111,10 +110,9 @@ function animate() {
     renderer.render(scene, camera);
 }
 
-// Start the loop
 animate();
 
-// Handle window resizing
+// Handle window resizing dynamically
 window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
