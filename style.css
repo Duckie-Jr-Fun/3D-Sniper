@@ -44,4 +44,11 @@ canvas {
     color: white;
     border: none;
     border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    transition: transform 0.1s, background-color 0.2s;
+}
+
+#startButton:hover {
+    background-color: #ff2a2a;
+    transform: translate(-50%, -52%);
 }
